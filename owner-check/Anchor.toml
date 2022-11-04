@@ -2,8 +2,8 @@
 seeds = false
 skip-lint = false
 [programs.localnet]
-owner_check = "BRAn5brMcPV69i6uH3jpaG9FcDEVYo5rGMyAPsMwzWEE"
-clone = "A4eTQheZwwx7GRm441KfXnsK4ZCf3RDbx4Dxmv8p9a2z"
+clone = "5SmitLhxfKa9F7FeW84veXYKWUfsxvujh7fGf1gTY6Ju"
+owner_check = "Cft4eTTrt4sJU4Ar35rUQHx6PSXfJju3dixmvApzhWws"
 
 [registry]
 url = "https://api.apr.dev"

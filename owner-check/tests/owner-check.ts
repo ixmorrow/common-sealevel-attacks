@@ -5,75 +5,70 @@ import { Clone } from "../target/types/clone"
 import { expect } from "chai"
 
 describe("owner-check", () => {
-  // Configure the client to use the local cluster.
   const provider = anchor.AnchorProvider.env()
   anchor.setProvider(provider)
 
   const program = anchor.workspace.OwnerCheck as Program<OwnerCheck>
   const programClone = anchor.workspace.Clone as Program<Clone>
 
-  const keypair = anchor.web3.Keypair.generate()
-  const keypairClone = anchor.web3.Keypair.generate()
+  const account = anchor.web3.Keypair.generate()
+  const accountClone = anchor.web3.Keypair.generate()
 
   it("Initialize Account", async () => {
-    // Add your test here.
-    const tx = await program.methods
+    await program.methods
       .initialize()
       .accounts({
-        user: keypair.publicKey,
+        data: account.publicKey,
         payer: provider.wallet.publicKey,
       })
-      .signers([keypair])
+      .signers([account])
       .rpc()
-    console.log("Your transaction signature", tx)
   })
 
-  it("Is initialized!", async () => {
-    // Add your test here.
-    const tx = await programClone.methods
+  it("Initialize Account Clone", async () => {
+    await programClone.methods
       .initialize()
       .accounts({
-        user: keypairClone.publicKey,
+        data: accountClone.publicKey,
         payer: provider.wallet.publicKey,
       })
-      .signers([keypairClone])
+      .signers([accountClone])
       .rpc()
-    console.log("Your transaction signature", tx)
   })
 
-  it("insecure no owner check", async () => {
+  it("insecure", async () => {
     await program.methods
       .insecure()
       .accounts({
-        user: keypair.publicKey,
+        data: account.publicKey,
       })
       .rpc()
   })
 
-  it("insecure no owner check", async () => {
+  it("insecure", async () => {
     await program.methods
       .insecure()
       .accounts({
-        user: keypairClone.publicKey,
+        data: accountClone.publicKey,
       })
       .rpc()
   })
 
-  it("secure owner check", async () => {
+  it("secure", async () => {
     await program.methods
       .secure()
       .accounts({
-        user: keypair.publicKey,
+        data: account.publicKey,
       })
       .rpc()
   })
 
-  it("secure owner check", async () => {
+  it("secure", async () => {
     try {
       await program.methods
         .secure()
         .accounts({
-          user: keypairClone.publicKey,
+          data: accountClone.publicKey,
         })
         .rpc()
     } catch (err) {
@@ -82,21 +77,21 @@ describe("owner-check", () => {
     }
   })
 
-  it("recommended owner check", async () => {
+  it("recommended", async () => {
     await program.methods
       .recommended()
       .accounts({
-        user: keypair.publicKey,
+        data: account.publicKey,
       })
       .rpc()
   })
 
-  it("recommended owner check", async () => {
+  it("recommended", async () => {
     try {
       await program.methods
         .recommended()
         .accounts({
-          user: keypairClone.publicKey,
+          data: accountClone.publicKey,
         })
         .rpc()
     } catch (err) {

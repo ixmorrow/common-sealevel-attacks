@@ -12,27 +12,13 @@ describe("signer-authorization", () => {
 
   const keypair = anchor.web3.Keypair.generate()
 
-  before(async () => {
-    await provider.connection.confirmTransaction(
-      await provider.connection.requestAirdrop(
-        keypair.publicKey,
-        1 * anchor.web3.LAMPORTS_PER_SOL
-      ),
-      "confirmed"
-    )
-  })
-
   it("insecure with signer", async () => {
-    const tx = await program.methods
+    await program.methods
       .insecure()
       .accounts({
-        authority: keypair.publicKey,
+        authority: provider.wallet.publicKey,
       })
-      .transaction()
-
-    await anchor.web3.sendAndConfirmTransaction(provider.connection, tx, [
-      keypair,
-    ])
+      .rpc()
   })
 
   it("insecure without signer", async () => {
@@ -45,16 +31,12 @@ describe("signer-authorization", () => {
   })
 
   it("secure with signer", async () => {
-    const tx = await program.methods
+    await program.methods
       .secure()
       .accounts({
-        authority: keypair.publicKey,
+        authority: provider.wallet.publicKey,
       })
-      .transaction()
-
-    await anchor.web3.sendAndConfirmTransaction(provider.connection, tx, [
-      keypair,
-    ])
+      .rpc()
   })
 
   it("secure without signer", async () => {
@@ -67,21 +49,17 @@ describe("signer-authorization", () => {
         .rpc()
     } catch (err) {
       expect(err)
-      console.log(err)
+      // console.log(err)
     }
   })
 
   it("recommended with signer", async () => {
-    const tx = await program.methods
+    await program.methods
       .recommended()
       .accounts({
-        authority: keypair.publicKey,
+        authority: provider.wallet.publicKey,
       })
-      .transaction()
-
-    await anchor.web3.sendAndConfirmTransaction(provider.connection, tx, [
-      keypair,
-    ])
+      .rpc()
   })
 
   it("recommended without signer", async () => {
@@ -94,7 +72,7 @@ describe("signer-authorization", () => {
         .rpc()
     } catch (err) {
       expect(err)
-      console.log(err)
+      // console.log(err)
     }
   })
 })
