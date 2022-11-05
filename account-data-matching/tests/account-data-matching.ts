@@ -110,7 +110,7 @@ describe("account-data-matching", () => {
         .rpc()
     } catch (err) {
       expect(err)
-      // console.log(err)
+      console.log(err)
     }
   })
 })

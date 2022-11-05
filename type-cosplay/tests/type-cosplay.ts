@@ -12,8 +12,10 @@ describe("type-cosplay", () => {
   anchor.setProvider(provider)
 
   const program = anchor.workspace.TypeCosplay as Program<TypeCosplay>
+
   const programSecure = anchor.workspace
     .TypeCosplaySecure as Program<TypeCosplaySecure>
+
   const programRecommended = anchor.workspace
     .TypeCosplayRecommended as Program<TypeCosplayRecommended>
 
@@ -26,7 +28,7 @@ describe("type-cosplay", () => {
   const typeOneRecommended = Keypair.generate()
   const typeTwoRecommended = Keypair.generate()
 
-  it("Is initialized!", async () => {
+  it("Initialize TypeOne", async () => {
     await program.methods
       .initializeTypeOne()
       .accounts({
@@ -37,7 +39,7 @@ describe("type-cosplay", () => {
       .rpc()
   })
 
-  it("Is initialized!", async () => {
+  it("Initialize TypeTwo", async () => {
     await program.methods
       .initializeTypeTwo()
       .accounts({
@@ -66,7 +68,7 @@ describe("type-cosplay", () => {
       .rpc()
   })
 
-  it("Is initialized!", async () => {
+  it("Initialize TypeOne", async () => {
     await programSecure.methods
       .initializeTypeOne()
       .accounts({
@@ -77,7 +79,7 @@ describe("type-cosplay", () => {
       .rpc()
   })
 
-  it("Is initialized!", async () => {
+  it("Initialize TypeTwo", async () => {
     await programSecure.methods
       .initializeTypeTwo()
       .accounts({
@@ -88,7 +90,7 @@ describe("type-cosplay", () => {
       .rpc()
   })
 
-  it("insecure", async () => {
+  it("secure", async () => {
     await programSecure.methods
       .secure()
       .accounts({
@@ -97,7 +99,7 @@ describe("type-cosplay", () => {
       .rpc()
   })
 
-  it("insecure", async () => {
+  it("secure", async () => {
     try {
       await programSecure.methods
         .secure()
@@ -111,7 +113,7 @@ describe("type-cosplay", () => {
     }
   })
 
-  it("Is initialized!", async () => {
+  it("Initialize TypeOne", async () => {
     await programRecommended.methods
       .initializeTypeOne()
       .accounts({
@@ -122,7 +124,7 @@ describe("type-cosplay", () => {
       .rpc()
   })
 
-  it("Is initialized!", async () => {
+  it("Initialize TypeTwo", async () => {
     await programRecommended.methods
       .initializeTypeTwo()
       .accounts({
@@ -133,7 +135,7 @@ describe("type-cosplay", () => {
       .rpc()
   })
 
-  it("insecure", async () => {
+  it("recommended", async () => {
     await programRecommended.methods
       .recommended()
       .accounts({
@@ -142,7 +144,7 @@ describe("type-cosplay", () => {
       .rpc()
   })
 
-  it("insecure", async () => {
+  it("recommended", async () => {
     try {
       await programRecommended.methods
         .recommended()
