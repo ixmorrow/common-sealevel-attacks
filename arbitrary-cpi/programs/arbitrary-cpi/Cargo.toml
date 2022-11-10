@@ -1,0 +1,20 @@
+[package]
+name = "arbitrary-cpi"
+version = "0.1.0"
+description = "Created with Anchor"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "arbitrary_cpi"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+
+[dependencies]
+anchor-lang = "0.25.0"
+callee-program = { path = "../callee-program", features = ["cpi"]}
