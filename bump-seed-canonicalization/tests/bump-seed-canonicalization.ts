@@ -4,7 +4,7 @@ import {
   createProgramAddressSync,
   findProgramAddressSync,
 } from "@project-serum/anchor/dist/cjs/utils/pubkey"
-import { assert, expect } from "chai"
+import { expect } from "chai"
 import { BumpSeedCanonicalization } from "../target/types/bump_seed_canonicalization"
 import { PublicKey, Keypair, SystemProgram } from '@solana/web3.js'
 import { safeAirdrop, findNonCanonicalPda } from './utils/utils'
