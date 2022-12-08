@@ -7,6 +7,7 @@ declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 pub mod bump_seed_canonicalization {
     use super::*;
 
+    // insecure, allows for creation of multiple accounts for given set of seeds
     pub fn initialize(ctx: Context<Initialize>, bump_seed: u8) -> Result<()> {
         let space = 32;
         let lamports = Rent::get()?.minimum_balance(space as usize);
@@ -53,25 +54,15 @@ pub mod bump_seed_canonicalization {
         Ok(())
     }
 
-    pub fn secure(ctx: Context<Unchecked>, bump_seed: u8) -> Result<()> {
-        let (address, expected_bump) = Pubkey::find_program_address(&[], ctx.program_id);
-
-        if address != ctx.accounts.pda.key() {
-            return Err(ProgramError::InvalidArgument.into());
-        }
-        if expected_bump != bump_seed {
-            return Err(ProgramError::InvalidArgument.into());
-        }
-        let account = User::try_from_slice(&ctx.accounts.pda.data.borrow()).unwrap();
-
-        msg!("PDA: {}", ctx.accounts.pda.key());
-        msg!("User: {}", account.user);
+    pub fn initialize_with_anchor(ctx: Context<InitializeAnchor>, value: u64) -> Result<()> {
+        ctx.accounts.data.value = value;
+        // store the bump on the account
+        ctx.accounts.data.bump = *ctx.bumps.get("data").unwrap();
         Ok(())
     }
 
-    pub fn recommended(ctx: Context<Checked>) -> Result<()> {
-        msg!("PDA: {}", ctx.accounts.pda.key());
-        msg!("User: {}", ctx.accounts.pda.0.user);
+    pub fn verify_address(ctx: Context<VerifyAddress>) -> Result<()> {
+        msg!("PDA confirmed to be derived with canonical bump: {}", ctx.accounts.data.key());
         Ok(())
     }
 }
@@ -84,6 +75,33 @@ pub struct Initialize<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
     pub system_program: Program<'info, System>,
+}
+
+// initialize account at PDA via Anchor constraints
+#[derive(Accounts)]
+pub struct InitializeAnchor<'info> {
+        #[account(mut)]
+        payer: Signer<'info>,
+        #[account(
+                init,
+                seeds = [DATA_PDA_SEED.as_bytes()],
+                // derives the PDA using the canonical bump
+                bump,
+                payer = payer,
+                space = 8 + 8 + 1
+            )]
+        data: Account<'info, Data>,
+        system_program: Program<'info, System>
+}
+
+#[derive(Accounts)]
+pub struct VerifyAddress<'info> {
+    #[account(
+			seeds = [DATA_PDA_SEED.as_bytes()],
+            // guranteed to be the canonical bump every time
+			bump = data.bump
+		)]
+    data: Account<'info, Data>,
 }
 
 #[derive(Accounts)]
@@ -102,6 +120,20 @@ pub struct Checked<'info> {
 pub struct User {
     user: Pubkey,
 }
+
+// Anchor account
+#[account]
+pub struct Data {
+    value: u64,
+    // bump field
+    bump: u8
+}
+
+
+
+/* ************************************************************ */
+
+pub const DATA_PDA_SEED: &str = "test-seed";
 
 #[derive(Clone)]
 pub struct UserAccount(User);
